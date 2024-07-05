@@ -1,1 +1,0 @@
-# native-module-android
