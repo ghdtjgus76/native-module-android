@@ -1,8 +1,7 @@
-import {Button, NativeModules, SafeAreaView} from 'react-native';
+import {Button, SafeAreaView} from 'react-native';
+import CalendarModule from './src/CalendarModule';
 
 function App(): React.JSX.Element {
-  const {CalendarModule} = NativeModules;
-
   const handlePress = () => {
     CalendarModule.createCalendarEvent('testName', 'testLocation');
   };
