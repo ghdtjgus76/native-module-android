@@ -1,10 +1,7 @@
 import {NativeModules} from 'react-native';
 
 interface CalendarModuleInterface {
-  createCalendarEvent(
-    name: string,
-    location: string,
-  ): void;
+  createCalendarEvent(name: string, location: string): Promise<number>;
 }
 
 const {CalendarModule} = NativeModules;
