@@ -2,18 +2,18 @@ import {Button, SafeAreaView} from 'react-native';
 import CalendarModule from './src/CalendarModule';
 
 function App(): React.JSX.Element {
-  const handlePress = () => {
-    CalendarModule.createCalendarEvent(
-      'testName',
-      'testLocation',
-      (error) => {
-        console.error(`Error found! ${error}`);
-      },
-      (eventId) => {
-        console.log(`Event ID ${eventId} returned`);
-      }
-    );
+  const handlePress = async () => {
+    try {
+      const eventId = await CalendarModule.createCalendarEvent(
+        'Party',
+        'My House',
+      );
+      console.log(`Created a new event with id ${eventId}`);
+    } catch (e) {
+      console.error(e);
+    }
   };
+
   return (
     <SafeAreaView>
       <Button

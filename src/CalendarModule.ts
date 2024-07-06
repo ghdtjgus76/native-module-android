@@ -4,8 +4,6 @@ interface CalendarModuleInterface {
   createCalendarEvent(
     name: string,
     location: string,
-    myFailureCallback: (error: Error) => void,
-    mySuccessCallback: (eventId: number) => void,
   ): void;
 }
 
