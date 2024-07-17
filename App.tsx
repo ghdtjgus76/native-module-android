@@ -1,6 +1,7 @@
-import {Button, SafeAreaView} from 'react-native';
-import CalendarModule, {CalendarEventEmitter} from './src/CalendarModule';
 import {useEffect} from 'react';
+import {Button, SafeAreaView} from 'react-native';
+import {CalendarEventEmitter, CalendarModule} from './src/CalendarModule';
+import {ImagePickerModule} from './src/ImagePickerModule';
 
 function App(): React.JSX.Element {
   useEffect(() => {
@@ -16,7 +17,7 @@ function App(): React.JSX.Element {
     };
   }, []);
 
-  const handlePress = async () => {
+  const handlePressCalendar = async () => {
     try {
       const eventId = await CalendarModule.createCalendarEvent(
         'Party',
@@ -28,12 +29,26 @@ function App(): React.JSX.Element {
     }
   };
 
+  const handlePressImagePicker = async () => {
+    try {
+      const image = await ImagePickerModule.pickImage();
+      console.log(image);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   return (
     <SafeAreaView>
       <Button
-        title="Click to invoke your native module!"
+        title="Click to invoke your native calendar module!"
         color="#841584"
-        onPress={handlePress}
+        onPress={handlePressCalendar}
+      />
+      <Button
+        title="Click to invoke your native image picker module!"
+        color="#841584"
+        onPress={handlePressImagePicker}
       />
     </SafeAreaView>
   );
