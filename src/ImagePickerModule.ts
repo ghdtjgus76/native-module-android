@@ -1,7 +1,7 @@
 import {NativeModules} from 'react-native';
 
 interface ImagePickerModuleInterface {
-  pickImage(): void;
+  pickImage(): Promise<string>;
 }
 
 const {ImagePickerModule: ImagePickerNativeModule} = NativeModules;
