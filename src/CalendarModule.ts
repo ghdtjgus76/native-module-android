@@ -4,7 +4,10 @@ interface CalendarModuleInterface {
   createCalendarEvent(name: string, location: string): Promise<number>;
 }
 
-const {CalendarModule} = NativeModules;
-export const CalendarEventEmitter = new NativeEventEmitter(CalendarModule);
+const {CalendarModule: CalendatNativeModule} = NativeModules;
 
-export default CalendarModule as CalendarModuleInterface;
+export const CalendarEventEmitter = new NativeEventEmitter(
+  CalendatNativeModule,
+);
+
+export const CalendarModule = CalendatNativeModule as CalendarModuleInterface;
