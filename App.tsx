@@ -2,6 +2,7 @@ import {useEffect} from 'react';
 import {Button, SafeAreaView} from 'react-native';
 import {CalendarEventEmitter, CalendarModule} from './src/CalendarModule';
 import {ImagePickerModule} from './src/ImagePickerModule';
+import {PhoneModule} from './src/PhoneModule';
 
 function App(): React.JSX.Element {
   useEffect(() => {
@@ -38,6 +39,11 @@ function App(): React.JSX.Element {
     }
   };
 
+  const handlePressPhone = async () => {
+    const result = await PhoneModule.makeCall('010-8712-0786');
+    console.log(result);
+  };
+
   return (
     <SafeAreaView>
       <Button
@@ -49,6 +55,11 @@ function App(): React.JSX.Element {
         title="Click to invoke your native image picker module!"
         color="#841584"
         onPress={handlePressImagePicker}
+      />
+      <Button
+        title="Click to invoke your native phone module!"
+        color="#841584"
+        onPress={handlePressPhone}
       />
     </SafeAreaView>
   );
