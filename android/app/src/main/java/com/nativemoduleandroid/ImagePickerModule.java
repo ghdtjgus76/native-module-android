@@ -14,8 +14,6 @@ public class ImagePickerModule extends ReactContextBaseJavaModule implements Act
 
     private static final int IMAGE_PICKER_REQUEST = 1;
     private Promise mPickerPromise;
-
-    // Constructor
     public ImagePickerModule(ReactApplicationContext reactContext) {
         super(reactContext);
         reactContext.addActivityEventListener(this);
@@ -70,7 +68,5 @@ public class ImagePickerModule extends ReactContextBaseJavaModule implements Act
     }
 
     @Override
-    public void onNewIntent(Intent intent) {
-        // Do nothing
-    }
+    public void onNewIntent(Intent intent) {}
 }
