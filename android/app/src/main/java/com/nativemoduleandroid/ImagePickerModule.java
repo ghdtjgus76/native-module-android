@@ -3,20 +3,23 @@ package com.nativemoduleandroid;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
-import androidx.annotation.Nullable;
+import android.provider.MediaStore;
 import com.facebook.react.bridge.ActivityEventListener;
+import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.BaseActivityEventListener;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.WritableMap;
 
-public class ImagePickerModule extends ReactContextBaseJavaModule implements ActivityEventListener {
-
+public class ImagePickerModule extends ReactContextBaseJavaModule {
+    private Promise resultPromise;
     private static final int IMAGE_PICKER_REQUEST = 1;
-    private Promise mPickerPromise;
+
     public ImagePickerModule(ReactApplicationContext reactContext) {
         super(reactContext);
-        reactContext.addActivityEventListener(this);
+        reactContext.addActivityEventListener(mActivityEventListener);
     }
 
     @Override
@@ -25,7 +28,7 @@ public class ImagePickerModule extends ReactContextBaseJavaModule implements Act
     }
 
     @ReactMethod
-    public void pickImage(final Promise promise) {
+    public void pickImage(Promise promise) {
         Activity currentActivity = getCurrentActivity();
 
         if (currentActivity == null) {
@@ -33,40 +36,35 @@ public class ImagePickerModule extends ReactContextBaseJavaModule implements Act
             return;
         }
 
-        mPickerPromise = promise;
+        resultPromise = promise;
 
         try {
-            Intent galleryIntent = new Intent(Intent.ACTION_PICK);
-            galleryIntent.setType("image/*");
+            Intent imagePickerIntent = new Intent(Intent.ACTION_PICK);
+            imagePickerIntent.setType("image/*");
 
-            Intent chooserIntent = Intent.createChooser(galleryIntent, "Pick an image");
-            currentActivity.startActivityForResult(chooserIntent, IMAGE_PICKER_REQUEST);
+            currentActivity.startActivityForResult(imagePickerIntent, IMAGE_PICKER_REQUEST);
         } catch (Exception e) {
-            mPickerPromise.reject("PICKER_ERROR", e.getMessage());
-            mPickerPromise = null;
+            resultPromise.reject("IMAGE_PICKER_MODULE_ERROR", e.getMessage());
+            resultPromise = null;
         }
     }
 
-    @Override
-    public void onActivityResult(Activity activity, int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == IMAGE_PICKER_REQUEST) {
-            if (mPickerPromise != null) {
-                if (resultCode == Activity.RESULT_OK && data != null) {
-                    Uri uri = data.getData();
-                    if (uri != null) {
-                        mPickerPromise.resolve(uri.toString());
+    private final ActivityEventListener mActivityEventListener = new BaseActivityEventListener() {
+        @Override
+        public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
+            if (requestCode == IMAGE_PICKER_REQUEST) {
+                if (resultPromise != null) {
+                    if (resultCode == Activity.RESULT_OK) {
+                        Uri uri = data.getData();
+                        WritableMap map = Arguments.createMap();
+                        map.putString("uri", uri.toString());
+                        resultPromise.resolve(map);
                     } else {
-                        mPickerPromise.reject("NO_IMAGE_DATA", "No image data found");
+                        resultPromise.reject("IMAGE_PICKER_CANCELLED", "Image picker was cancelled");
                     }
-                } else if (resultCode == Activity.RESULT_CANCELED) {
-                    mPickerPromise.reject("USER_CANCELLED", "User cancelled image picker");
+                    resultPromise = null;
                 }
-
-                mPickerPromise = null;
             }
         }
-    }
-
-    @Override
-    public void onNewIntent(Intent intent) {}
+    };
 }
